@@ -8,6 +8,7 @@ import json
 
 import streamlit as st
 
+load_dotenv()
 
 def get_secret(key: str) -> str:
     # Works both locally and on Streamlit Cloud
@@ -16,7 +17,7 @@ def get_secret(key: str) -> str:
     except:
         return os.getenv(key)
 
-# load_dotenv()
+
 
 llm = ChatGroq(
     api_key=get_secret("GROQ_API_KEY"),

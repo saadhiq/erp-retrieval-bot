@@ -7,6 +7,8 @@ import json
 
 import streamlit as st
 
+load_dotenv()
+
 def get_secret(key: str) -> str:
     # Works both locally and on Streamlit Cloud
     try:
@@ -14,7 +16,7 @@ def get_secret(key: str) -> str:
     except:
         return os.getenv(key)
 
-# load_dotenv()
+
 
 
 llm = ChatGroq(

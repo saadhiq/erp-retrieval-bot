@@ -9,7 +9,7 @@ import json
 import streamlit as st
 
 
-# load_dotenv()
+load_dotenv()
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets.readonly",
