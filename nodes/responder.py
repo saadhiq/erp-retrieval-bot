@@ -5,10 +5,20 @@ from dotenv import load_dotenv
 import os
 import json
 
+import streamlit as st
+
+def get_secret(key: str) -> str:
+    # Works both locally and on Streamlit Cloud
+    try:
+        return st.secrets[key]
+    except:
+        return os.getenv(key)
+
 load_dotenv()
 
+
 llm = ChatGroq(
-    api_key=os.getenv("GROQ_API_KEY"),
+    api_key=get_secret("GROQ_API_KEY"),
     model="llama-3.3-70b-versatile"
 )
 

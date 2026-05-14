@@ -4,6 +4,10 @@ import pandas as pd
 from google.oauth2.service_account import Credentials
 from dotenv import load_dotenv
 import os
+import json
+
+import streamlit as st
+
 
 load_dotenv()
 
@@ -13,15 +17,30 @@ SCOPES = [
 ]
 
 def get_sheets_client():
-    creds = Credentials.from_service_account_file(
-        "credentials.json",
+    try:
+        # Streamlit Cloud - read from secrets
+        creds_dict = json.loads(st.secrets["GOOGLE_CREDENTIALS"])
+    except:
+        # Local - read from file
+        with open("credentials.json") as f:
+            creds_dict = json.load(f)
+    
+    creds = Credentials.from_service_account_info(
+        creds_dict,
         scopes=SCOPES
     )
     return gspread.authorize(creds)
 
+def get_secret(key: str) -> str:
+    # Works both locally and on Streamlit Cloud
+    try:
+        return st.secrets[key]
+    except:
+        return os.getenv(key)
+
 def load_table(sheet_name: str) -> pd.DataFrame:
     client = get_sheets_client()
-    spreadsheet = client.open_by_key(os.getenv("GOOGLE_SHEETS_ID"))
+    spreadsheet = client.open_by_key(get_secret("GOOGLE_SHEETS_ID"))
     worksheet = spreadsheet.worksheet(sheet_name)
     data = worksheet.get_all_records()
     return pd.DataFrame(data)
