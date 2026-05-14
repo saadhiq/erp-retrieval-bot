@@ -16,7 +16,7 @@ def get_secret(key: str) -> str:
     except:
         return os.getenv(key)
 
-load_dotenv()
+# load_dotenv()
 
 llm = ChatGroq(
     api_key=get_secret("GROQ_API_KEY"),
