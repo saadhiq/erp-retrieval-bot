@@ -2,7 +2,7 @@
 import gspread
 import pandas as pd
 from google.oauth2.service_account import Credentials
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 import json
 import ast
@@ -10,7 +10,7 @@ import ast
 import streamlit as st
 
 
-load_dotenv()
+# load_dotenv()
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets.readonly",
