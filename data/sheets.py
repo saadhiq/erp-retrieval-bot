@@ -17,11 +17,19 @@ SCOPES = [
 ]
 
 def get_sheets_client():
-    
-    # Check if running on Streamlit Cloud
     if "GOOGLE_CREDENTIALS" in st.secrets:
-        # Streamlit Cloud
-        creds_dict = dict(st.secrets["GOOGLE_CREDENTIALS"])
+        # It's stored as a string - parse it carefully
+        creds_raw = st.secrets["GOOGLE_CREDENTIALS"]
+        
+        # If it's already a dict (TOML table format)
+        if isinstance(creds_raw, dict):
+            creds_dict = dict(creds_raw)
+        else:
+            # It's a string - fix \n and parse
+            creds_dict = json.loads(
+                str(creds_raw).replace("\\n", "\n")
+            )
+        
         creds = Credentials.from_service_account_info(
             creds_dict,
             scopes=SCOPES
@@ -33,6 +41,7 @@ def get_sheets_client():
             scopes=SCOPES
         )
     return gspread.authorize(creds)
+
 
 def get_secret(key: str) -> str:
     # Works both locally and on Streamlit Cloud
