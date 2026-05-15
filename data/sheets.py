@@ -5,6 +5,7 @@ from google.oauth2.service_account import Credentials
 from dotenv import load_dotenv
 import os
 import json
+import ast
 
 import streamlit as st
 
@@ -18,24 +19,22 @@ SCOPES = [
 
 def get_sheets_client():
     if "GOOGLE_CREDENTIALS" in st.secrets:
-        # It's stored as a string - parse it carefully
         creds_raw = st.secrets["GOOGLE_CREDENTIALS"]
         
-        # If it's already a dict (TOML table format)
         if isinstance(creds_raw, dict):
             creds_dict = dict(creds_raw)
         else:
-            # It's a string - fix \n and parse
-            creds_dict = json.loads(
-                str(creds_raw).replace("\\n", "\n")
-            )
+            # Use ast.literal_eval for Python format strings
+            creds_dict = ast.literal_eval(str(creds_raw))
+            # Fix private key newlines
+            if "private_key" in creds_dict:
+                creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
         
         creds = Credentials.from_service_account_info(
             creds_dict,
             scopes=SCOPES
         )
     else:
-        # Local
         creds = Credentials.from_service_account_file(
             "credentials.json",
             scopes=SCOPES
