@@ -19,17 +19,8 @@ SCOPES = [
 
 def get_sheets_client():
     if "GOOGLE_CREDENTIALS" in st.secrets:
-        creds_raw = st.secrets["GOOGLE_CREDENTIALS"]
-        
-        if isinstance(creds_raw, dict):
-            creds_dict = dict(creds_raw)
-        else:
-            # Use ast.literal_eval for Python format strings
-            creds_dict = ast.literal_eval(str(creds_raw))
-            # Fix private key newlines
-            if "private_key" in creds_dict:
-                creds_dict["private_key"] = creds_dict["private_key"].replace("\\n", "\n")
-        
+        # Streamlit reads TOML table directly as dict - no parsing needed!
+        creds_dict = dict(st.secrets["GOOGLE_CREDENTIALS"])
         creds = Credentials.from_service_account_info(
             creds_dict,
             scopes=SCOPES
