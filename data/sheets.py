@@ -18,17 +18,18 @@ SCOPES = [
 
 def get_sheets_client():
     try:
-        # Streamlit Cloud - read from secrets
-        creds_dict = json.loads(st.secrets["GOOGLE_CREDENTIALS"])
-    except:
+        # Streamlit Cloud - read as dict directly (no JSON parsing!)
+        creds_dict = dict(st.secrets["GOOGLE_CREDENTIALS"])
+        creds = Credentials.from_service_account_info(
+            creds_dict,
+            scopes=SCOPES
+        )
+    except Exception:
         # Local - read from file
-        with open("credentials.json") as f:
-            creds_dict = json.load(f)
-    
-    creds = Credentials.from_service_account_info(
-        creds_dict,
-        scopes=SCOPES
-    )
+        creds = Credentials.from_service_account_file(
+            "credentials.json",
+            scopes=SCOPES
+        )
     return gspread.authorize(creds)
 
 def get_secret(key: str) -> str:
