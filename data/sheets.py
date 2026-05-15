@@ -17,15 +17,17 @@ SCOPES = [
 ]
 
 def get_sheets_client():
-    try:
-        # Streamlit Cloud - read as dict directly (no JSON parsing!)
+    
+    # Check if running on Streamlit Cloud
+    if "GOOGLE_CREDENTIALS" in st.secrets:
+        # Streamlit Cloud
         creds_dict = dict(st.secrets["GOOGLE_CREDENTIALS"])
         creds = Credentials.from_service_account_info(
             creds_dict,
             scopes=SCOPES
         )
-    except Exception:
-        # Local - read from file
+    else:
+        # Local
         creds = Credentials.from_service_account_file(
             "credentials.json",
             scopes=SCOPES
