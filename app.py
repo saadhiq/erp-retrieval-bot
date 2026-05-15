@@ -11,7 +11,7 @@ st.set_page_config(
 st.title("🤖 ERP Data Assistant")
 st.caption("Ask questions about Sales Orders, HR, and Customers")
 
-st.write(dict(st.secrets))
+
 
 # Initialize chat history in session state
 if "messages" not in st.session_state:
